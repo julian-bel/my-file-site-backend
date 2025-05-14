@@ -42,14 +42,13 @@ app.post('/check-password', (req, res) => {
 
 
 app.post('/secret-upload', upload.single('file'), (req, res) => {
+  console.log("Received key:", req.body.key);
+  console.log("Expected key:", process.env.UPLOAD_KEY);
+
   const userKey = req.body.key;
 
-  if (userKey !== UPLOAD_KEY) {
+  if (userKey !== process.env.UPLOAD_KEY) {
     return res.status(403).json({ success: false, message: "Unauthorized" });
-  }
-
-  if (!req.file) {
-    return res.status(400).json({ error: 'No file uploaded' });
   }
 
   const label = req.body.label;
@@ -58,6 +57,7 @@ app.post('/secret-upload', upload.single('file'), (req, res) => {
 
   res.status(200).json({ success: true, message: 'File uploaded successfully', file: req.file });
 });
+
 
 
 app.get('/search', (req, res) => {
